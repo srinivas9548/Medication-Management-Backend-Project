@@ -1,0 +1,43 @@
+// Registration user API
+POST http://localhost:3000/users/
+Content-Type: application/json
+
+{
+    "name": "srinivas",
+    "username": "srinu",
+    "password": "srinu@2022",
+    "gender": "male",
+    "location": "kakinada"
+}
+###
+
+// Login user API
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{
+    "username": "srinu",
+    "password": "srinu@2022"
+}
+###
+
+// Add Medication API
+POST http://localhost:3000/medications
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNyaW51IiwiaWF0IjoxNzUwMzE5MDc1fQ.9-hogaPpVEvGt0EAPxbZiaAt_g3mlTSfGR3fCaKszBQ
+
+{
+    "name": "Ibuprofen",
+    "dosage": "200mg",
+    "frequency": "Once a day"
+}
+###
+
+// View Medication API
+GET http://localhost:3000/medications
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNyaW51IiwiaWF0IjoxNzUwMzE5MDc1fQ.9-hogaPpVEvGt0EAPxbZiaAt_g3mlTSfGR3fCaKszBQ
+###
+
+// Mark Medication as Taken API
+POST http://localhost:3000/medications/2/mark-taken
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNyaW51IiwiaWF0IjoxNzUwMzE5MDc1fQ.9-hogaPpVEvGt0EAPxbZiaAt_g3mlTSfGR3fCaKszBQ
