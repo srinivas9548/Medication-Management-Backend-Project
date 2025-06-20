@@ -95,7 +95,7 @@ app.post("/users", async (request, response) => {
         db.get(
             `SELECT * FROM user WHERE username = ?`, [username], async (err, dbUser) => {
                 if (err) {
-                    console.error("DB Error (SELECT):", err.message);
+                    console.error("DB Error:", err.message);
                     response.status(500).json({ error: "Database error" });
                 } else if (dbUser) {
                     response.status(400).json({ error: "User already exists" });
@@ -241,6 +241,16 @@ app.post("/medications/:id/mark-taken", authenticateToken, (request, response) =
                 response.status(200).json({ message: "Medication marked as taken for today" });
             }
         );
+    });
+});
+
+// Get All the users
+app.get("/users", authenticateToken, (request, response) => {
+    db.all("SELECT * FROM user", [], (err, rows) => {
+        if (err) {
+            return response.status(500).json({ error: "Failed to fetch users" });
+        }
+        response.json(rows);
     });
 });
 
