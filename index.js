@@ -91,23 +91,23 @@ const authenticateToken = (request, response, next) => {
 app.post("/users", async (request, response) => {
     try {
         const { username, name, password, location } = request.body;
+        console.log("Received user data:", request.body);
 
         db.get(
             `SELECT * FROM user WHERE username = ?`, [username], async (err, dbUser) => {
                 if (err) {
-                    response.status(500).send("Database error");
+                    response.status(500).json({ error: "Database error" });
                 } else if (dbUser) {
                     response.status(400).json({ error: "User already exists" });
                 } else {
                     const hashedPassword = await bcrypt.hash(password, 10);
 
                     db.run(
-                        `INSERT INTO user (username, name, password, location)
-                        VALUES (?, ?, ?, ?)`,
+                        `INSERT INTO user (username, name, password, location) VALUES (?, ?, ?, ?)`,
                         [username, name, hashedPassword, location],
                         function (err) {
                             if (err) {
-                                response.status(500).send("Error creating user");
+                                response.status(500).json({ error: "Error creating user" });
                             } else {
                                 response.json({ message: "User created successfully" });
                             }
@@ -133,7 +133,7 @@ app.post("/login", async (request, response) => {
     db.get(
         `SELECT * FROM user WHERE username = ?`, [username], async (err, dbUser) => {
             if (err) {
-                response.status(500).send("Database Error");
+                response.status(500).json({ error: "Database Error" });
             } else if (!dbUser) {
                 response.status(400).json({ error_msg: "Invalid Username" });
             } else {
@@ -200,12 +200,12 @@ app.post("/medications", authenticateToken, (request, response) => {
 app.get("/medications", authenticateToken, (request, response) => {
     db.get(`SELECT id FROM user WHERE username = ?`, [request.username], (err, user) => {
         if (err || !user) {
-            return response.status(400).send("User not found");
+            return response.status(400).json({ error: "User not found" });
         }
 
         db.all(`SELECT * FROM medication WHERE user_id = ?`, [user.id], (err, rows) => {
             if (err) {
-                return response.status(500).send("Failed to fetch medications");
+                return response.status(500).json({ error: "Failed to fetch medications" });
             }
             response.status(200).json(rows);
         });
@@ -219,7 +219,7 @@ app.post("/medications/:id/mark-taken", authenticateToken, (request, response) =
 
     db.get(`SELECT taken_dates FROM medication WHERE id = ?`, [medicationId], (err, row) => {
         if (err || !row) {
-            return response.status(404).send("Medication not found");
+            return response.status(404).json({ error: "Medication not found" });
         }
 
         let dates = row.taken_dates ? row.taken_dates.split(",") : [];
@@ -232,7 +232,7 @@ app.post("/medications/:id/mark-taken", authenticateToken, (request, response) =
             [dates.join(","), medicationId],
             function (err) {
                 if (err) {
-                    return response.status(500).send("Failed to mark as taken");
+                    return response.status(500).json({ error: "Failed to mark as taken" });
                 }
                 response.status(200).json({ message: "Medication marked as taken for today" });
             }
