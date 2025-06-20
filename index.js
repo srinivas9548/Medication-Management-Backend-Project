@@ -108,6 +108,9 @@ app.post("/users", async (request, response) => {
                         function (err) {
                             if (err) {
                                 console.error("DB Insert Error:", err.message);
+                                if (err.message.includes("UNIQUE constraint failed")) {
+                                    return response.status(400).json({ error: "Username already exists" });
+                                }
                                 response.status(500).json({ error: "Error creating user" });
                             } else {
                                 response.json({ message: "User created successfully" });
