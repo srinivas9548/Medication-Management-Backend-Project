@@ -27,7 +27,6 @@ const db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CR
             username TEXT UNIQUE,
             name TEXT,
             password TEXT,
-            gender TEXT,
             location TEXT
         )`,
             (err) => {
@@ -91,7 +90,7 @@ const authenticateToken = (request, response, next) => {
 // User Registration (sign up)
 app.post("/users", async (request, response) => {
     try {
-        const { username, name, password, gender, location } = request.body;
+        const { username, name, password, location } = request.body;
 
         db.get(
             `SELECT * FROM user WHERE username = ?`, [username], async (err, dbUser) => {
@@ -103,9 +102,9 @@ app.post("/users", async (request, response) => {
                     const hashedPassword = await bcrypt.hash(password, 10);
 
                     db.run(
-                        `INSERT INTO user (username, name, password, gender, location)
-            VALUES (?, ?, ?, ?, ?)`,
-                        [username, name, hashedPassword, gender, location],
+                        `INSERT INTO user (username, name, password, location)
+                        VALUES (?, ?, ?, ?)`,
+                        [username, name, hashedPassword, location],
                         function (err) {
                             if (err) {
                                 response.status(500).send("Error creating user");
@@ -166,7 +165,7 @@ app.post("/medications", authenticateToken, (request, response) => {
     const { name, dosage, frequency } = request.body;
 
     if (!name || !dosage || !frequency) {
-        return response.status(400).json({ error: "All fields (name, dosage, frequency) are required." });
+        return response.status(400).json({ error: "All fields are required." });
     }
 
     db.get(`SELECT id FROM user WHERE username = ?`, [request.username], (error, user) => {

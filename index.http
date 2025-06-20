@@ -6,7 +6,6 @@ Content-Type: application/json
     "name": "srinivas",
     "username": "srinu",
     "password": "srinu@2022",
-    "gender": "male",
     "location": "kakinada"
 }
 ###
@@ -39,5 +38,5 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNya
 ###
 
 // Mark Medication as Taken API
-POST http://localhost:3000/medications/2/mark-taken
+POST http://localhost:3000/medications/1/mark-taken
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNyaW51IiwiaWF0IjoxNzUwMzE5MDc1fQ.9-hogaPpVEvGt0EAPxbZiaAt_g3mlTSfGR3fCaKszBQ
