@@ -91,11 +91,11 @@ const authenticateToken = (request, response, next) => {
 app.post("/users", async (request, response) => {
     try {
         const { username, name, password, location } = request.body;
-        console.log("Received user data:", request.body);
 
         db.get(
             `SELECT * FROM user WHERE username = ?`, [username], async (err, dbUser) => {
                 if (err) {
+                    console.error("DB Error (SELECT):", err.message);
                     response.status(500).json({ error: "Database error" });
                 } else if (dbUser) {
                     response.status(400).json({ error: "User already exists" });
@@ -107,6 +107,7 @@ app.post("/users", async (request, response) => {
                         [username, name, hashedPassword, location],
                         function (err) {
                             if (err) {
+                                console.error("DB Insert Error:", err.message);
                                 response.status(500).json({ error: "Error creating user" });
                             } else {
                                 response.json({ message: "User created successfully" });
